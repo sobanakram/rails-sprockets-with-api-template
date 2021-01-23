@@ -2,17 +2,26 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.0]
   def change
     
     create_table(:users) do |t|
+
+      ## User Info
+      t.string :name,               null: false, default: ""
+      t.string :device_token,       null: false, default: ""
+      t.integer :app_platform,      null: false, default: 0
+      t.string :app_version,        null: false, default: ""
+      t.integer :status,            null: false, default: 0
+
       ## Required
-      t.string :provider, :null => false, :default => "email"
-      t.string :uid, :null => false, :default => ""
+      t.string :email,              null: false, default: ""
+      t.string :provider,           null: false, default: "email"
+      t.string :uid,                null: false, default: ""
 
       ## Database authenticatable
-      t.string :encrypted_password, :null => false, :default => ""
+      t.string :encrypted_password, null: false, default: ""
 
       ## Recoverable
       t.string   :reset_password_token
       t.datetime :reset_password_sent_at
-      t.boolean  :allow_password_change, :default => false
+      t.boolean :allow_password_change, default: false
 
       ## Rememberable
       t.datetime :remember_created_at
@@ -27,12 +36,6 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[6.0]
       # t.integer  :failed_attempts, :default => 0, :null => false # Only if lock strategy is :failed_attempts
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
-
-      ## User Info
-      t.string :name
-      t.string :nickname
-      t.string :image
-      t.string :email
 
       ## Tokens
       t.text :tokens
