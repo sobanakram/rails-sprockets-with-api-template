@@ -5,6 +5,8 @@ ruby "~> #{`cat .ruby-version`.strip}"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', "~> 6.0"
+
+gem 'stimulus-rails'
 # Use Postgres as the database for Active Record
 gem "pg", "~> 1.2"
 # Use Puma as the app server
@@ -57,6 +59,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'rename', "~> 1.0"
   gem "annotate", "~> 3.1"
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'web-console', "~> 4.1"

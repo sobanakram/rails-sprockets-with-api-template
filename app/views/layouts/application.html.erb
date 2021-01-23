@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Rails Template</title>
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
-  <base href="./">
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <head>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <base href="./">
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
-  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-</head>
+    <title>Rails Template</title>
 
-<body>
-<%= yield %>
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= stimulus_include_tags %>
+  </head>
 
-</body>
+  <body>
+    <%= render "shared/header" %>
+    <main>
+      <%= yield %>
+    </main>
+    <%= render "shared/footer" %>
+  </body>
 </html>

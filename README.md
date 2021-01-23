@@ -4,7 +4,7 @@ Rails 6 Template without webpacker
 
 ### Requirements
 1. Ruby 3.0
-2. Rails 6.1 (Latest stable version)
+2. Rails 6.0 (Latest stable version)
 3. Postgres 12
 4. Node js and Yarn
 
@@ -15,8 +15,9 @@ Rails 6 Template without webpacker
 3. Update `.ruby-gemset` file with your project name and create gemset with same name.
 4. Install bundler within `gem install bundler`.
 5. Install dependencies using bundler `bundler install`.
-6. Create Database and migrate `rails db:create db:migrate`
-7. Start Server `rails s` and visit `http://localhost:3000`
+6. Rename project using this command `rails g rename:into New-Name`
+7. Create Database and migrate `rails db:create db:migrate`
+8. Start Server `rails s` and visit `http://localhost:3000`
 
 
 ##### Adding gems
