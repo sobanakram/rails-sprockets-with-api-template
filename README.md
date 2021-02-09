@@ -1,10 +1,10 @@
 # Rails-Sprockets-Template
 
-Rails 6 Template without webpacker
+Rails 6.1 Template without webpacker
 
 ### Requirements
 1. Ruby 3.0
-2. Rails 6.0 (Latest stable version)
+2. Rails 6.1 (Latest stable version)
 3. Postgres 12
 4. Node js and Yarn
 
