@@ -16,8 +16,8 @@ module Api
         param :device_token, String
       end
 
-      api :PUT, 'users.json', 'Reader Update'
-      error 422, 'Unprocessable Entity'
+      api :PUT, "users.json", "Reader Update"
+      error 422, "Unprocessable Entity"
       param_group :user
       returns :user, code: 201
 
@@ -39,7 +39,7 @@ module Api
 
       def render_create_error
         render json: {
-          error: resource_errors[:full_messages].join(', ')
+          error: resource_errors[:full_messages].join(", ")
         }, status: :unprocessable_entity
       end
 

@@ -35,6 +35,11 @@ $ bundle install
 $ pessimize --no-backup
 ```
 
+##### Model annotations
+After adding new migration run this command to annotate models
+```console
+$ annotate --models
+```
 
 ##### Credentials
 We are using Rails way to add critical credentials

@@ -4,7 +4,7 @@ module Statusable
   extend ActiveSupport::Concern
 
   included do
-    enum status: { active: 0, inactive: 1, blocked: 2, on_hold: 3 }
+    enum status: {active: 0, inactive: 1, blocked: 2, on_hold: 3}
 
     after_validation :activate
   end

@@ -8,11 +8,11 @@ module Api
       include Api::Concerns::ActAsApiRequest
       skip_before_action :check_json_request, only: %i[edit update]
 
-      api :POST, 'users/password.json', 'Reader Reset Password'
-      error 422, 'Unprocessable Entity'
-      description 'Authorization not required'
+      api :POST, "users/password.json", "Reader Reset Password"
+      error 422, "Unprocessable Entity"
+      description "Authorization not required"
       param :email, String, required: true
-      returns code: 200, desc: 'a successful response' do
+      returns code: 200, desc: "a successful response" do
         property :message, String
       end
       # this action is responsible for generating password reset tokens and
@@ -21,9 +21,9 @@ module Api
         self.resource = resource_class.send_reset_password_instructions(email: params[:email])
         yield resource if block_given?
         if successfully_sent?(resource)
-          render_resource({ message: I18n.t('devise.passwords.sended', email: params[:email]) }, 200)
+          render_resource({message: I18n.t("devise.passwords.sended", email: params[:email])}, 200)
         else
-          render_error(422, resource.errors.full_messages.join(', '))
+          render_error(422, resource.errors.full_messages.join(", "))
         end
       end
 

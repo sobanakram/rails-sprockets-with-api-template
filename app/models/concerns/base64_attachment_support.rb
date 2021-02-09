@@ -8,7 +8,7 @@ module Base64AttachmentSupport
   end
 
   def attach_base64_image(attribute_name, base64_data)
-    image_hash = { data: "data:image/png;base64,#{base64_data}" }
+    image_hash = {data: "data:image/png;base64,#{base64_data}"}
     send(attribute_name).attach(image_hash)
   end
 

@@ -17,15 +17,15 @@ module Api
         param :app_version, String, required: true
       end
 
-      api :POST, 'users/sign_in.json', 'User login'
-      error 422, 'Unprocessable Entity'
-      description 'Authorization not required, It will return access-token, client, uid in header, which required for authorization'
+      api :POST, "users/sign_in.json", "User login"
+      error 422, "Unprocessable Entity"
+      description "Authorization not required, It will return access-token, client, uid in header, which required for authorization"
       param :email, String, required: true
       param :password, String, required: true
       param :device_token, String, required: true
       param :app_platform, String, desc: "Possible values: #{User.app_platforms.keys}", required: true
       param :app_version, String, required: true
-      returns :user, code: 201, desc: 'a successful response'
+      returns :user, code: 201, desc: "a successful response"
 
       def create
         super do
@@ -33,17 +33,20 @@ module Api
         end
       end
 
-      api :Delete, 'users/sign_out.json', 'User logout'
-      description ''
+      api :Delete, "users/sign_out.json", "User logout"
+      description ""
 
       def destroy
         # remove auth instance variables so that after_action does not run
-        user = remove_instance_variable(:@resource) if @resource
-        client = @token.client if @token.client
+        user = @resource ? remove_instance_variable(:@resource) : nil
+        client = @token.client
         @token.clear!
 
         if user
-          user.tokens.clear
+          if client && user.tokens[client]
+            user.tokens.delete(client)
+          end
+
           user.update(device_token: nil)
           render_destroy_success
         else
@@ -58,12 +61,12 @@ module Api
       end
 
       def render_create_error_bad_credentials
-        render_error(422, I18n.t('devise_token_auth.sessions.bad_credentials'))
+        render_error(422, I18n.t("devise_token_auth.sessions.bad_credentials"))
       end
 
       def render_create_error_account_locked
         if @resource.active_for_authentication?
-          render_error(401, I18n.t('devise.mailer.unlock_instructions.account_lock_msg'))
+          render_error(401, I18n.t("devise.mailer.unlock_instructions.account_lock_msg"))
         else
           render_create_error_not_confirmed
         end
@@ -74,7 +77,7 @@ module Api
       end
 
       def render_destroy_error
-        render_error(422, I18n.t('devise_token_auth.sessions.user_not_found'))
+        render_error(422, I18n.t("devise_token_auth.sessions.user_not_found"))
       end
 
       private

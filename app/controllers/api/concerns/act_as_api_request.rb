@@ -14,7 +14,7 @@ module Api
       def check_json_request
         return if request.format.json?
 
-        render json: { error: I18n.t('api.errors.invalid_content_type') }, status: :not_acceptable
+        render json: {error: I18n.t("api.errors.invalid_content_type")}, status: :not_acceptable
       end
 
       def skip_session_storage
@@ -28,7 +28,7 @@ module Api
       end
 
       def render_resource_error(resource, status = 422)
-        render_error(status, resource.errors.full_messages.join(', '))
+        render_error(status, resource.errors.full_messages.join(", "))
       end
 
       def render_message(message, status = 200)
@@ -46,7 +46,7 @@ module Api
       end
 
       def render_account_blocked
-        render_error(401, I18n.t('devise.sessions.blocked'))
+        render_error(401, I18n.t("devise.sessions.blocked"))
       end
 
       def request_content_type
@@ -54,7 +54,7 @@ module Api
       end
 
       def pagy_meta(pagy)
-        pagy_headers(pagy).except('Link')
+        pagy_headers(pagy).except("Link")
       end
 
       def attach_base64_attachment(attachment, attachment_params)
@@ -63,7 +63,6 @@ module Api
                             filename: attachment_params[:filename],
                             content_type: attachment_params[:content_type])
         end
-
       end
     end
   end
