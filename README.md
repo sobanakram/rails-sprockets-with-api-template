@@ -17,7 +17,8 @@ Rails 6 Template without webpacker
 5. Install dependencies using bundler `bundler install`.
 6. Rename project using this command `rails g rename:into New-Name`
 7. Create Database and migrate `rails db:create db:migrate`
-8. Start Server `rails s` and visit `http://localhost:3000`
+8. Create Credentials file alongside master key file `EDITOR="nano" rails credentials:edit`
+9. Start Server `rails s` and visit `http://localhost:3000`
 
 
 ##### Adding gems
