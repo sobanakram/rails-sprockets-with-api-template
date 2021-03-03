@@ -1,0 +1,250 @@
+---
+- hosts: web
+  become: true
+
+  vars_files:
+    - vars/vars.yml
+
+  pre_tasks:
+    - name: Update apt cache if needed.
+      apt: update_cache=yes cache_valid_time=3600
+
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted
+
+  tasks:
+    - name: Create the user for deployment purpose
+      user:
+        name: "{{ deploy_user }}"
+        password: "{{ deploy_user_password | password_hash('sha512') }}"
+        groups:
+          - sudo
+        state: present
+        shell: /bin/bash
+      become: true
+
+    - name: Set up ssh key login for the deployment user
+      authorized_key:
+        user: "{{ deploy_user }}"
+        state: present
+        key: "{{ lookup('file', deploy_user_public_key_local_path) }}"
+      become: true
+
+    - name: Disable password based login
+      lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+      notify:
+        - restart sshd
+
+    - name: Get software for apt repository management.
+      apt:
+        state: present
+        name:
+          - python3-apt
+          - python3-pycurl
+          - apt-transport-https
+          - gnupg2
+
+    - name: Add chris lea repository for redis
+      apt_repository: repo='ppa:chris-lea/redis-server' update_cache=yes
+
+    - name: Add Nodesource apt key.
+      apt_key:
+        url: https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280
+        id: "68576280"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_12.x {{ ansible_distribution_release }} main"
+        state: present
+      register: node_repo
+
+    - name: Update apt cache if repo was added.
+      apt: update_cache=yes
+      when: node_repo.changed
+
+    - name: Add Yarn GPG public key
+      apt_key:
+        url: https://dl.yarnpkg.com/debian/pubkey.gpg
+        state: present
+
+    - name: Ensure Debian sources list file exists for Yarn
+      file:
+        path: /etc/apt/sources.list.d/yarn.list
+        owner: root
+        mode: 0644
+        state: touch
+
+    - name: Ensure Debian package is in sources list for Yarn
+      lineinfile:
+        dest: /etc/apt/sources.list.d/yarn.list
+        regexp: 'deb http://dl.yarnpkg.com/debian/ stable main'
+        line: 'deb http://dl.yarnpkg.com/debian/ stable main'
+        state: present
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install dependencies for compiling Ruby along with Node.js and Yarn
+      apt:
+        state: present
+        name:
+          - acl
+          - git-core
+          - curl
+          - zlib1g-dev
+          - build-essential
+          - libssl-dev
+          - libreadline-dev
+          - libyaml-dev
+          - libsqlite3-dev
+          - sqlite3
+          - libxml2-dev
+          - libxslt1-dev
+          - libcurl4-openssl-dev
+          - software-properties-common
+          - libffi-dev
+          - dirmngr
+          - gnupg
+          - apt-transport-https
+          - ca-certificates
+          - autoconf
+          - automake
+          - bison
+          - libgdbm-dev
+          - libncurses5-dev
+          - libtool
+          - pkg-config
+          - libgmp-dev
+          - nodejs
+          - yarn
+
+- name: Log in as deploy user and setup ruby and nginx
+  hosts: web
+  vars_files:
+    - vars/vars.yml
+    - vars/envs.yml
+  user: "{{ deploy_user }}"
+  become: true
+  roles:
+    - role: certbot
+      become_user: "root"
+
+- name: Log in as deploy user and setup ruby and nginx
+  hosts: web
+  vars_files:
+    - vars/vars.yml
+    - vars/envs.yml
+  user: "{{ deploy_user }}"
+  become: true
+  become_user: "{{ deploy_user }}"
+  roles:
+    - role: rvm
+
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted
+
+    - name: restart postgresql
+      service:
+        name: postgresql
+        state: restart
+        sleep: 5
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name:
+          - nginx
+        state: present
+      become: true
+      become_user: root
+    - name: Copy app nginx conf
+      template:
+        src: templates/nginx_app.conf.j2
+        dest: /etc/nginx/sites-enabled/{{ app_name }}
+      become: true
+      become_user: root
+
+    - name: Ensure default virtual host is removed.
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      become: true
+      become_user: root
+
+    - name: Restart nginx service
+      service:
+        name: nginx
+        state: restarted
+      become: true
+      become_user: root
+
+    - name: Install postgres packages
+      apt:
+        name:
+          - libpq-dev
+          - "postgresql-{{ postgresql_version }}"
+          - postgresql-contrib
+          - python3-psycopg2
+        state: present
+      become: true
+      become_user: root
+
+    - name: Ensure all configured locales are present.
+      locale_gen: "name={{ item }} state=present"
+      with_items: "{{ postgresql_locales }}"
+      register: locale_gen_result
+
+    - name: Force-restart PostgreSQL after new locales are generated.
+      service:
+        name: postgresql
+        state: restarted
+      when: locale_gen_result.changed
+      become: true
+      become_user: root
+
+    - name: Ensure PostgreSQL is started and enabled on boot.
+      service:
+        name: postgresql
+        state: started
+        enabled: true
+      become: true
+      become_user: root
+
+    - name: Create postgresql database
+      postgresql_db: name={{ postgres_db_name }}
+      become: true
+      become_user: postgres
+      # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+      vars:
+        ansible_ssh_pipelining: true
+
+    - name: Create postgresql user
+      postgresql_user: name={{ postgres_db_user }} password={{ postgres_db_password }}
+      become: true
+      become_user: postgres
+
+    - name: Ensure Redis is started on boot
+      service: name=redis-server state=started enabled=yes
+      become: true
+      become_user: root
+
+    - name: Ensure the directory of user sidekiq service exists
+      file:
+        path: "/home/{{ deploy_user }}/.config/systemd/user"
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+
+    - name: Copy sidekiq service file to user service
+      template:
+        src: templates/sidekiq.service.j2
+        dest: "/home/{{ deploy_user }}/.config/systemd/user/sidekiq.service"
+
+    - name: enable linger for user service
+      command: "loginctl enable-linger {{ deploy_user }}"
