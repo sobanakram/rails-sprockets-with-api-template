@@ -42,6 +42,17 @@ After adding new migration run this command to annotate models
 $ annotate --models
 ```
 
+##### Ruby Style Guide, Linter and fixed
+We use [Standard](https://github.com/testdouble/standard) for Ruby Style
+Before committing code, you should run this command to see any issues
+```console
+$ bundle exec standardrb
+```
+You can run this command to auto fix those issues
+```console
+$ bundle exec standardrb --fix
+```
+
 ##### Credentials
 We are using Rails way to add critical credentials
 And for testing we are using Heroku and SERVER_URL ENV variable.
