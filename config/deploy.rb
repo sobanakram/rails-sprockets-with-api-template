@@ -20,6 +20,13 @@ set :rvm_ruby_version, `cat .ruby-version`.strip
 set :deploy_via, :remote_cache
 set :puma_restart_command, 'bundle exec --keep-file-descriptors puma'
 
+set :init_system, :systemd
+
+set :yarn_target_path, -> { release_path } # default not set
+# set :yarn_flags, '--production --silent --no-progress'    # default
+# set :yarn_roles, :all                                     # default
+# set :yarn_env_variables, {}                               # default
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 

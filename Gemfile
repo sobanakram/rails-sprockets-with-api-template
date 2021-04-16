@@ -78,6 +78,9 @@ group :development do
   gem 'capistrano-rails-tail-log', "~> 0.1", require: false
   gem 'capistrano-rvm', "~> 0.1", require: false
   gem 'capistrano3-puma', "~> 5.0", require: false
+  gem 'capistrano-yarn', "~> 2.0", require: false
+
+  # gem 'capistrano-sidekiq', github: 'rwojnarowski/capistrano-sidekiq', require: false
 end
 
 group :test do

@@ -133,6 +133,8 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    capistrano-yarn (2.0.2)
+      capistrano (~> 3.0)
     capistrano3-puma (5.0.3)
       capistrano (~> 3.7)
       capistrano-bundler
@@ -361,6 +363,7 @@ DEPENDENCIES
   capistrano-rails-console (~> 2.3)
   capistrano-rails-tail-log (~> 0.1)
   capistrano-rvm (~> 0.1)
+  capistrano-yarn (~> 2.0)
   capistrano3-puma (~> 5.0)
   capybara (~> 3.35)
   data-confirm-modal (~> 1.6)
