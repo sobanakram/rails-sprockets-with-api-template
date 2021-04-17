@@ -1,6 +1,6 @@
 Apipie.configure do |config|
-  config.app_name = "Client Dex Apis"
-  config.copyright = "&copy; 2010 BrainX"
+  config.app_name = "Rails Template Apis"
+  config.copyright = "&copy; #{Time.zone.now.year} BrainX Technologies"
   config.api_base_url = "/api/v1/"
   config.doc_base_url = "/api_docs"
   # where is your API defined?

@@ -59,7 +59,7 @@ group :development, :test do
 end
 
 group :development do
-  gem "rename", "~> 1.0"
+  gem "rename", github: "sobanakram/rename"
   gem "annotate", "~> 3.1"
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem "web-console", "~> 4.1"
