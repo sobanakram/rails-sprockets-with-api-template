@@ -123,16 +123,16 @@
           - nodejs
           - yarn
 
-- name: Log in as deploy user and setup ruby and nginx
-  hosts: web
-  vars_files:
-    - vars/vars.yml
-    - vars/envs.yml
-  user: "{{ deploy_user }}"
-  become: true
-  roles:
-    - role: certbot
-      become_user: "root"
+#- name: Log in as deploy user and setup ruby and nginx
+#  hosts: web
+#  vars_files:
+#    - vars/vars.yml
+#    - vars/envs.yml
+#  user: "{{ deploy_user }}"
+#  become: true
+#  roles:
+#    - role: certbot
+#      become_user: "root"
 
 - name: Log in as deploy user and setup ruby and nginx
   hosts: web
@@ -229,22 +229,22 @@
       become: true
       become_user: postgres
 
-    - name: Ensure Redis is started on boot
-      service: name=redis-server state=started enabled=yes
-      become: true
-      become_user: root
-
-    - name: Ensure the directory of user sidekiq service exists
-      file:
-        path: "/home/{{ deploy_user }}/.config/systemd/user"
-        state: directory
-        owner: "{{ deploy_user }}"
-        group: "{{ deploy_user }}"
-
-    - name: Copy sidekiq service file to user service
-      template:
-        src: templates/sidekiq.service.j2
-        dest: "/home/{{ deploy_user }}/.config/systemd/user/sidekiq.service"
+#    - name: Ensure Redis is started on boot
+#      service: name=redis-server state=started enabled=yes
+#      become: true
+#      become_user: root
+#
+#    - name: Ensure the directory of user sidekiq service exists
+#      file:
+#        path: "/home/{{ deploy_user }}/.config/systemd/user"
+#        state: directory
+#        owner: "{{ deploy_user }}"
+#        group: "{{ deploy_user }}"
+#
+#    - name: Copy sidekiq service file to user service
+#      template:
+#        src: templates/sidekiq.service.j2
+#        dest: "/home/{{ deploy_user }}/.config/systemd/user/sidekiq.service"
 
     - name: enable linger for user service
       command: "loginctl enable-linger {{ deploy_user }}"
