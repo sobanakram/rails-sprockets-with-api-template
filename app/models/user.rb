@@ -5,9 +5,9 @@ class User < ApplicationRecord
 
   # Extensions
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  # :confirmable, :lockable, :timeoutable, :trackable, :lockable and :omniauthable
   devise :database_authenticatable, :registerable,
-    :recoverable, :rememberable, :validatable, :confirmable, :lockable, :trackable
+    :recoverable, :rememberable, :validatable, :confirmable, :trackable
   include DeviseTokenAuth::Concerns::User
   include Base64AttachmentSupport
   include Statusable

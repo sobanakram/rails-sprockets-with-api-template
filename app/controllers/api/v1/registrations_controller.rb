@@ -3,7 +3,7 @@
 module Api
   module V1
     class RegistrationsController < DeviseTokenAuth::RegistrationsController
-      protect_from_forgery with: :exception
+      protect_from_forgery with: :null_session
       include Api::Concerns::ActAsApiRequest
       before_action :authenticate_user!, only: :update
 
@@ -28,6 +28,10 @@ module Api
       end
 
       private
+
+      def sign_up_params
+        params.permit(:email, :password, :name, :device_token, :app_platform, :app_version)
+      end
 
       def account_update_params
         params.permit(:name, :device_token, :app_platform, :app_version)

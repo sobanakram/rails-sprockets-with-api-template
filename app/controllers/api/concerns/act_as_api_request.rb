@@ -23,7 +23,7 @@ module Api
         request.session_options[:skip] = true
       end
 
-      def render_resource(resource, status = 201)
+      def render_resource(resource, status = 200)
         render json: resource, status: status
       end
 
