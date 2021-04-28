@@ -1,12 +1,15 @@
 Rails.application.routes.draw do
   root to: "home#index"
+  apipie
+
   devise_for :users
 
   namespace :api do
     namespace :v1, defaults: {format: :json} do
       mount_devise_token_auth_for "User", at: "/users", controllers: {
         sessions: "api/v1/sessions",
-        passwords: "api/v1/passwords"
+        passwords: "api/v1/passwords",
+        registrations: "api/v1/registrations"
       }
 
       get "user/profile", to: "users#profile"

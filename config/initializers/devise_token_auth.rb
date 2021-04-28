@@ -6,4 +6,9 @@ DeviseTokenAuth.setup do |config|
   config.change_headers_on_each_request = false
   config.max_number_of_devices = 1
   config.enable_standard_devise_support = true
+  config.headers_names = { :'access-token' => 'access-token',
+                           :'client' => 'client',
+                           :'expiry' => 'expiry',
+                           :'uid' => 'uid',
+                           :'token-type' => 'token-type' }
 end

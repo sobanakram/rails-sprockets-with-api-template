@@ -18,13 +18,18 @@ module Api
       end
 
       api :POST, "users/sign_in.json", "User login"
+      example <<~EOS
+                HEADERS: {
+                  "Content-Type": "application/json",
+                  "App-Platform": "Possible values: #{User.app_platforms.keys}",
+                  "App-Version": "1"
+                }
+      EOS
       error 422, "Unprocessable Entity"
       description "Authorization not required, It will return access-token, client, uid in header, which required for authorization"
       param :email, String, required: true
       param :password, String, required: true
       param :device_token, String, required: true
-      param :app_platform, String, desc: "Possible values: #{User.app_platforms.keys}", required: true
-      param :app_version, String, required: true
       returns :user, code: 201, desc: "a successful response"
 
       def create
@@ -57,7 +62,7 @@ module Api
       protected
 
       def render_create_success
-        render json: @resource
+        render_resource(@resource)
       end
 
       def render_create_error_bad_credentials
@@ -87,7 +92,7 @@ module Api
       end
 
       def resource_update_params
-        params.permit(:device_token, :app_platform, :app_version)
+        params.permit(:device_token).merge(app_platform: request.headers["app-platform"], app_version: request.headers["app-version"])
       end
     end
   end

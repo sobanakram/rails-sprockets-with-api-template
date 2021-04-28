@@ -43,3 +43,4 @@
         name: nginx
         state: restarted
       become: true
+      become_user: root

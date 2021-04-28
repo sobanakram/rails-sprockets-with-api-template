@@ -33,18 +33,20 @@ module Api
         params.permit(:name, :device_token, :app_platform, :app_version)
       end
 
+      def render_create_success
+        render_resource(@resource, 201)
+      end
+
       def render_update_success
-        render json: @resource
+        render_resource(@resource)
       end
 
       def render_create_error
-        render json: {
-          error: resource_errors[:full_messages].join(", ")
-        }, status: :unprocessable_entity
+        render_resource_error(@resource)
       end
 
       def render_update_error
-        render_create_error
+        render_resource_error(@resource)
       end
     end
   end
