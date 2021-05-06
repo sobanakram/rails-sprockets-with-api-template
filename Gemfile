@@ -49,7 +49,7 @@ gem "devise_token_auth", "~> 1.1"
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", "~> 1.7", require: false
 
-gem "bootstrap", "~> 5.0"
+gem 'bootstrap', '~> 5.0.0.beta3'
 
 group :development, :test do
   gem "letter_opener", "~> 1.7"
